@@ -1,12 +1,12 @@
 class PracticeRecordsController < ApplicationController
 
   def index
-    @practice_records = PracticeRecord.page(params[:page]).per(10)
-    @practice_record = PracticeRecord.new
+    @practice_records = current_user.practice_records.page(params[:page]).per(10)
+    @practice_record = current_user.practice_records.new
   end
 
   def create
-    @practice_record = PracticeRecord.new(practice_record_params)
+    @practice_record = current_user.practice_records.new(practice_record_params)
     if @practice_record.save
       respond_to do |format|
         format.turbo_stream
