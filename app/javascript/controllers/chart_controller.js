@@ -1,13 +1,21 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static targets = ["canvas", "monthly", "yearly", "monthSelect", "monthSelectContainer"]
   static values = {
-    labels: Array,
-    data: Array
+    monthsData: Object,
+    monthlyLabels: Array,
+    monthlyData: Array
   }
 
   connect() {
-    // Chart.jsが読み込まれるまで待機
+    this.currentView = 'monthly'
+    this.monthsDataObj = this.monthsDataValue
+
+    // 現在の月をデフォルトに設定
+    const currentMonthKey = Object.keys(this.monthsDataObj).sort().reverse()[0]
+    this.currentMonth = currentMonthKey
+
     this.waitForChart()
   }
 
@@ -15,21 +23,62 @@ export default class extends Controller {
     if (typeof Chart !== 'undefined') {
       this.renderChart()
     } else {
-      // Chart.jsが読み込まれていない場合は少し待って再試行
       setTimeout(() => this.waitForChart(), 100)
     }
   }
 
-  renderChart() {
-    const ctx = this.element.getContext('2d')
+  switchToMonthly() {
+    this.currentView = 'monthly'
+    this.updateChart()
+    this.updateButtons()
+    this.updateMonthSelectVisibility()
+  }
 
-    new Chart(ctx, {
+  switchToYearly() {
+    this.currentView = 'yearly'
+    this.updateChart()
+    this.updateButtons()
+    this.updateMonthSelectVisibility()
+  }
+
+  changeMonth(event) {
+    this.currentMonth = event.target.value
+    this.updateChart()
+  }
+
+  updateMonthSelectVisibility() {
+    if (this.hasMonthSelectContainerTarget) {
+      if (this.currentView === 'monthly') {
+        this.monthSelectContainerTarget.style.display = 'block'
+      } else {
+        this.monthSelectContainerTarget.style.display = 'none'
+      }
+    }
+  }
+
+  updateButtons() {
+    if (this.hasMonthlyTarget && this.hasYearlyTarget) {
+      if (this.currentView === 'monthly') {
+        this.monthlyTarget.classList.add('active')
+        this.yearlyTarget.classList.remove('active')
+      } else {
+        this.monthlyTarget.classList.remove('active')
+        this.yearlyTarget.classList.add('active')
+      }
+    }
+  }
+
+  renderChart() {
+    const ctx = this.canvasTarget.getContext('2d')
+    const currentMonthData = this.monthsDataObj[this.currentMonth]
+
+    this.chart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: this.labelsValue,
+        labels: currentMonthData.labels,
         datasets: [{
           label: '調子',
-          data: this.dataValue,
+          data: currentMonthData.data,
           borderColor: '#1abc9c',
           backgroundColor: 'rgba(26, 188, 156, 0.1)',
           tension: 0.4,
@@ -74,5 +123,23 @@ export default class extends Controller {
         }
       }
     })
+
+    this.updateButtons()
+    this.updateMonthSelectVisibility()
+  }
+
+  updateChart() {
+    if (!this.chart) return
+
+    if (this.currentView === 'monthly') {
+      const currentMonthData = this.monthsDataObj[this.currentMonth]
+      this.chart.data.labels = currentMonthData.labels
+      this.chart.data.datasets[0].data = currentMonthData.data
+    } else {
+      this.chart.data.labels = this.monthlyLabelsValue
+      this.chart.data.datasets[0].data = this.monthlyDataValue
+    }
+
+    this.chart.update()
   }
 }

@@ -18,13 +18,29 @@
   </div>
 
   <!-- グラフエリア -->
-  <div class="chart-container">
-    <h2 class="chart-title">過去30日間の調子の推移</h2>
-    <canvas
-      data-controller="chart"
-      data-chart-labels-value="<%= @daily_conditions.map { |date, _| date.strftime('%m/%d') }.to_json %>"
-      data-chart-data-value="<%= @daily_conditions.map { |_, condition| condition }.to_json %>">
-    </canvas>
+  <div class="chart-container" data-controller="chart"
+       data-chart-months-data-value="<%= @months_data.to_json %>"
+       data-chart-monthly-labels-value="<%= @monthly_conditions.map { |date, _| date.strftime('%Y年%m月') }.to_json %>"
+       data-chart-monthly-data-value="<%= @monthly_conditions.map { |_, condition| condition }.to_json %>">
+
+    <div class="chart-header">
+      <div class="chart-header-left">
+        <h2 class="chart-title">調子の推移</h2>
+        <div class="month-select-container" data-chart-target="monthSelectContainer">
+          <select class="month-select" data-chart-target="monthSelect" data-action="change->chart#changeMonth">
+            <% @months_data.keys.sort.reverse.each do |month_key| %>
+              <option value="<%= month_key %>"><%= @months_data[month_key][:label] %></option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+      <div class="chart-switch">
+        <button class="switch-btn active" data-chart-target="monthly" data-action="click->chart#switchToMonthly">月次</button>
+        <button class="switch-btn" data-chart-target="yearly" data-action="click->chart#switchToYearly">年次</button>
+      </div>
+    </div>
+
+    <canvas data-chart-target="canvas"></canvas>
   </div>
 </div>
 

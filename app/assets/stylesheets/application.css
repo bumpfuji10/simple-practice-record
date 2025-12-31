@@ -563,11 +563,81 @@ dialog::backdrop {
     font-size: 20px;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 24px;
 }
 
 @media (max-width: 768px) {
     .stats-cards {
         grid-template-columns: 1fr;
     }
+}
+
+.chart-container + .chart-container {
+    margin-top: 32px;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.chart-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.chart-switch {
+    display: flex;
+    gap: 0;
+    background-color: #f0f0f0;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.switch-btn {
+    padding: 8px 20px;
+    background-color: transparent;
+    color: #666;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.switch-btn:hover {
+    color: #333;
+}
+
+.switch-btn.active {
+    background-color: #1abc9c;
+    color: #fff;
+}
+
+.month-select-container {
+    display: none;
+}
+
+.month-select {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    outline: none;
+}
+
+.month-select:hover {
+    border-color: #1abc9c;
+}
+
+.month-select:focus {
+    border-color: #1abc9c;
 }
