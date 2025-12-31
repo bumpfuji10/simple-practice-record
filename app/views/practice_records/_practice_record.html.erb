@@ -1,0 +1,10 @@
+<div class="record-card"
+     data-action="click->dialog#openWithData"
+     data-title="<%= practice_record.title %>"
+     data-content="<%= practice_record.content %>"
+     data-date="<%= practice_record.created_at.strftime('%Y/%m/%d %H:%M') %>"
+     data-condition="<%= practice_record.condition %>">
+  <h2 class="record-title"><%= practice_record.title %></h2>
+  <p class="record-content"><%= practice_record.content %></p>
+  <span class="record-date"><%= practice_record.created_at.strftime("%Y/%m/%d %H:%M") %></span>
+</div>

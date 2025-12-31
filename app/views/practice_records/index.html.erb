@@ -1,0 +1,28 @@
+<h1 class="page-title">練習記録一覧</h1>
+
+<div data-controller="modal">
+  <button class="fab" data-action="click->modal#open">+</button>
+  <%= render partial: "practice_records/new_record_modal", locals: { practice_record: @practice_record } %>
+</div>
+
+<div data-controller="dialog">
+  <div class="records-list" id="records">
+    <%= render partial: "practice_records/practice_record", collection: @practice_records %>
+  </div>
+
+  <dialog data-dialog-target="dialog">
+    <div class="dialog-header">
+      <div>
+        <h2 data-dialog-target="title"></h2>
+        <span class="record-date" data-dialog-target="date"></span>
+      </div>
+      <div class="dialog-close" data-action="click->dialog#close"></div>
+    </div>
+    <div class="dialog-condition">
+      調子: <span data-dialog-target="condition"></span>
+    </div>
+    <p class="record-content" data-dialog-target="content"></p>
+  </dialog>
+</div>
+
+<%= paginate @practice_records %>

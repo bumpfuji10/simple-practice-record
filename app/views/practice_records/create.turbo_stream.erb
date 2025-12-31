@@ -1,0 +1,2 @@
+<%= turbo_stream.prepend "records", partial: "practice_records/practice_record", locals: { practice_record: @practice_record } %>
+<%= turbo_stream.append "toast-container", partial: "shared/toast", locals: { message: "作成に成功しました", type: "success" } %>

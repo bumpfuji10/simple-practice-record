@@ -1,0 +1,9 @@
+<div class="modal hidden" data-modal-target="newRecordModal" data-action="click->modal#closeOnOverlay">
+  <div class="modal-content" data-action="click->modal#stopPropagation">
+    <div class="modal-header">
+      <h2>新しい練習記録</h2>
+      <button type="button" class="modal-close" data-action="click->modal#close">&times;</button>
+    </div>
+    <%= render partial: "practice_records/form", locals: { practice_record: practice_record } %>
+  </div>
+</div>

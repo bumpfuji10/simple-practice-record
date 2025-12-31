@@ -1,0 +1,25 @@
+<%= form_with model: practice_record do |form| %>
+  <div class="form-row">
+    <%= form.text_field :title, placeholder: "タイトル" %>
+    <%= form.textarea :content, placeholder: "練習内容" %>
+
+    <div class="condition-selector" data-controller="condition">
+      <label class="condition-label">調子</label>
+      <div class="slider-container">
+        <div class="slider-track" data-condition-target="track" data-action="click->condition#clickTrack">
+          <div class="slider-fill" data-condition-target="fill"></div>
+          <div class="slider-thumb" data-condition-target="thumb" data-action="mousedown->condition#startDrag touchstart->condition#startDrag"></div>
+        </div>
+        <div class="slider-labels">
+          <% (1..10).each do |num| %>
+            <span class="slider-label"><%= num %></span>
+          <% end %>
+        </div>
+        <div class="slider-value" data-condition-target="valueDisplay">-</div>
+      </div>
+      <%= form.hidden_field :condition, id: "condition_value", data: { condition_target: "hiddenField" } %>
+    </div>
+
+    <%= form.submit "保存" %>
+  </div>
+<% end %>
