@@ -1,44 +1,46 @@
-<h1 class="page-title"><%= @user.name %></h1>
-
-<div class="user-details">
-  <p><strong>Email:</strong> <%= @user.email %></p>
-  <p><strong>Total Records:</strong> <%= @practice_records.count %></p>
-</div>
-
-<h2 class="section-title">Practice Records</h2>
-
-<div data-controller="dialog">
-  <div class="records-list">
-    <% @practice_records.each do |record| %>
-      <div class="record-card"
-           data-action="click->dialog#openWithData"
-           data-title="<%= record.title %>"
-           data-content="<%= record.content %>"
-           data-date="<%= record.created_at.strftime('%Y-%m-%d') %>"
-           data-condition="<%= record.condition %>">
-        <h3 class="record-title"><%= record.title %></h3>
-        <p class="record-content"><%= record.content %></p>
-        <div class="record-meta">
-          <span class="record-date"><%= record.created_at.strftime("%Y-%m-%d") %></span>
-          <% if record.condition %>
-            <span class="record-condition">調子: <%= record.condition %></span>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
+<div class="calendar-container">
+  <div class="user-info-header">
+    <div>
+      <h1 class="page-title"><%= @user.name %></h1>
+      <p class="user-email-display"><%= @user.email %></p>
+    </div>
   </div>
 
-  <dialog data-dialog-target="dialog">
-    <div class="dialog-header">
-      <div>
-        <h2 data-dialog-target="title"></h2>
-        <span class="record-date" data-dialog-target="date"></span>
-      </div>
-      <div class="dialog-close" data-action="click->dialog#close"></div>
+  <div class="calendar-header">
+    <h2 class="calendar-title"><%= @date.strftime("%Y年%m月") %></h2>
+    <div class="calendar-nav">
+      <%= link_to "前月", user_path(@user, date: @date.prev_month), class: "nav-btn" %>
+      <%= link_to "今月", user_path(@user), class: "nav-btn" %>
+      <%= link_to "翌月", user_path(@user, date: @date.next_month), class: "nav-btn" %>
     </div>
-    <div class="dialog-condition">
-      調子: <span data-dialog-target="condition"></span>
+  </div>
+
+  <div class="calendar">
+    <div class="calendar-weekdays">
+      <% %w[日 月 火 水 木 金 土].each do |day| %>
+        <div class="weekday"><%= day %></div>
+      <% end %>
     </div>
-    <p class="record-content" data-dialog-target="content"></p>
-  </dialog>
+
+    <div class="calendar-days">
+      <% (@start_date..@end_date).each do |date| %>
+        <% records = @practice_records[date] || [] %>
+        <% is_current_month = date.month == @date.month %>
+        <% is_today = date == Date.today %>
+        <% avg_condition = records.any? ? (records.sum(&:condition).to_f / records.size).round : nil %>
+
+        <div class="calendar-day <%= 'other-month' unless is_current_month %> <%= 'today' if is_today %> <%= "has-records level-#{avg_condition}" if avg_condition %>">
+          <div class="day-number"><%= date.day %></div>
+          <% if records.any? %>
+            <div class="day-info">
+              <div class="record-count"><%= records.size %>件</div>
+              <% if avg_condition %>
+                <div class="condition-badge">調子: <%= avg_condition %></div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
