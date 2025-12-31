@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     @end_date = @date.end_of_month.end_of_week(:sunday)
 
     @practice_records = @user.practice_records
-      .where(created_at: @start_date.beginning_of_day..@end_date.end_of_day)
-      .group_by { |record| record.created_at.to_date }
+      .for_calendar_month(@date)
+      .grouped_by_date
   end
 end

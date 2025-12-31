@@ -1,4 +1,4 @@
-<div class="calendar-container">
+<div class="calendar-container" data-controller="calendar">
   <div class="calendar-header">
     <h1 class="calendar-title"><%= @date.strftime("%Y年%m月") %></h1>
     <div class="calendar-nav">
@@ -22,7 +22,10 @@
         <% is_today = date == Date.today %>
         <% avg_condition = records.any? ? (records.sum(&:condition).to_f / records.size).round : nil %>
 
-        <div class="calendar-day <%= 'other-month' unless is_current_month %> <%= 'today' if is_today %> <%= "has-records level-#{avg_condition}" if avg_condition %>">
+        <div class="calendar-day <%= 'other-month' unless is_current_month %> <%= 'today' if is_today %> <%= "has-records level-#{avg_condition}" if avg_condition %> <%= 'clickable' if records.any? %>"
+             data-action="<%= 'click->calendar#openDay' if records.any? %>"
+             data-date="<%= date.strftime('%Y-%m-%d') %>"
+             data-records="<%= records.map { |r| { id: r.id, title: r.title, content: r.content, condition: r.condition, created_at: r.created_at } }.to_json %>">
           <div class="day-number"><%= date.day %></div>
           <% if records.any? %>
             <div class="day-info">
@@ -36,4 +39,18 @@
       <% end %>
     </div>
   </div>
+
+  <!-- ダイアログ -->
+  <dialog data-calendar-target="dialog" data-action="click->calendar#closeOnBackdrop">
+    <div class="dialog-header">
+      <div>
+        <h2 data-calendar-target="dialogTitle"></h2>
+        <span class="record-date" data-calendar-target="dialogDate"></span>
+      </div>
+      <div class="dialog-close" data-action="click->calendar#close"></div>
+    </div>
+    <div class="dialog-records-list" data-calendar-target="recordsList">
+      <!-- レコードが動的に追加されます -->
+    </div>
+  </dialog>
 </div>

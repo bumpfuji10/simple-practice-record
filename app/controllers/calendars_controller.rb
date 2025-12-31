@@ -6,7 +6,7 @@ class CalendarsController < ApplicationController
 
     # その月の練習記録を取得
     @practice_records = current_user.practice_records
-      .where(created_at: @start_date.beginning_of_day..@end_date.end_of_day)
-      .group_by { |record| record.created_at.to_date }
+      .for_calendar_month(@date)
+      .grouped_by_date
   end
 end
