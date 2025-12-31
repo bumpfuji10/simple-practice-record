@@ -39,6 +39,9 @@
           <nav>
             <%= link_to("My Calendar", mycalendar_path) %>
           </nav>
+          <nav>
+            <%= link_to("My Statistics", mystatistics_path) %>
+          </nav>
           <div class="user-info">
             <%= link_to user_path(current_user), class: "user-link" do %>
               <div class="user-name"><%= current_user.name %></div>

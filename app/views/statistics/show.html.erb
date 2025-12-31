@@ -1,0 +1,31 @@
+<h1 class="page-title">統計情報</h1>
+
+<div class="statistics-container">
+  <!-- 統計カード -->
+  <div class="stats-cards">
+    <div class="stat-card">
+      <div class="stat-label">総練習記録</div>
+      <div class="stat-value"><%= @total_records %>件</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">平均調子</div>
+      <div class="stat-value"><%= @avg_condition || '-' %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">今月の記録</div>
+      <div class="stat-value"><%= @records_this_month %>件</div>
+    </div>
+  </div>
+
+  <!-- グラフエリア -->
+  <div class="chart-container">
+    <h2 class="chart-title">過去30日間の調子の推移</h2>
+    <canvas
+      data-controller="chart"
+      data-chart-labels-value="<%= @daily_conditions.map { |date, _| date.strftime('%m/%d') }.to_json %>"
+      data-chart-data-value="<%= @daily_conditions.map { |_, condition| condition }.to_json %>">
+    </canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

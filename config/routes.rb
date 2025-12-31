@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   delete "logout", to: "sessions#destroy"
 
   get "mycalendar", to: "calendars#show", as: :mycalendar
+  get "mystatistics", to: "statistics#show", as: :mystatistics
 
   root "practice_records#index"
   resources :practice_records, only: [:index, :create]
