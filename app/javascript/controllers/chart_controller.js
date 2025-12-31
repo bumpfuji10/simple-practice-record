@@ -5,16 +5,26 @@ export default class extends Controller {
   static values = {
     monthsData: Object,
     monthlyLabels: Array,
-    monthlyData: Array
+    monthlyData: Array,
+    dashboardMode: Boolean,
+    dashboardLabels: Array,
+    dashboardData: Array
   }
 
   connect() {
     this.currentView = 'monthly'
-    this.monthsDataObj = this.monthsDataValue
 
-    // 現在の月をデフォルトに設定
-    const currentMonthKey = Object.keys(this.monthsDataObj).sort().reverse()[0]
-    this.currentMonth = currentMonthKey
+    // ダッシュボードモードの場合
+    if (this.dashboardModeValue) {
+      this.isDashboardMode = true
+    } else {
+      this.isDashboardMode = false
+      this.monthsDataObj = this.monthsDataValue
+
+      // 現在の月をデフォルトに設定
+      const currentMonthKey = Object.keys(this.monthsDataObj).sort().reverse()[0]
+      this.currentMonth = currentMonthKey
+    }
 
     this.waitForChart()
   }
@@ -70,15 +80,25 @@ export default class extends Controller {
 
   renderChart() {
     const ctx = this.canvasTarget.getContext('2d')
-    const currentMonthData = this.monthsDataObj[this.currentMonth]
+
+    // ダッシュボードモードの場合
+    let labels, data
+    if (this.isDashboardMode) {
+      labels = this.dashboardLabelsValue
+      data = this.dashboardDataValue
+    } else {
+      const currentMonthData = this.monthsDataObj[this.currentMonth]
+      labels = currentMonthData.labels
+      data = currentMonthData.data
+    }
 
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: currentMonthData.labels,
+        labels: labels,
         datasets: [{
           label: '調子',
-          data: currentMonthData.data,
+          data: data,
           borderColor: '#1abc9c',
           backgroundColor: 'rgba(26, 188, 156, 0.1)',
           tension: 0.4,
@@ -124,8 +144,11 @@ export default class extends Controller {
       }
     })
 
-    this.updateButtons()
-    this.updateMonthSelectVisibility()
+    // ダッシュボードモード以外の場合のみボタンを更新
+    if (!this.isDashboardMode) {
+      this.updateButtons()
+      this.updateMonthSelectVisibility()
+    }
   }
 
   updateChart() {
