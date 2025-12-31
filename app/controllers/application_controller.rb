@@ -6,8 +6,13 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   before_action :require_login
+  before_action :set_practice_record, if: :logged_in?
 
   private
+
+  def set_practice_record
+    @practice_record = current_user.practice_records.new
+  end
 
   def current_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]

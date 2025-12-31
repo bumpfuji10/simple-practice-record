@@ -26,14 +26,24 @@
   <body>
     <div id="toast-container"></div>
     <% if logged_in? %>
+      <div data-controller="modal">
+        <button class="fab" data-action="click->modal#open">+</button>
+        <%= render partial: "practice_records/new_record_modal", locals: { practice_record: @practice_record } %>
+      </div>
+
       <div class="main-container">
         <aside>
           <nav>
             <%= link_to("Practice Record Index", practice_records_path) %>
           </nav>
+          <nav>
+            <%= link_to("My Calendar", mycalendar_path) %>
+          </nav>
           <div class="user-info">
-            <div class="user-name"><%= current_user.name %></div>
-            <div class="user-email"><%= current_user.email %></div>
+            <%= link_to user_path(current_user), class: "user-link" do %>
+              <div class="user-name"><%= current_user.name %></div>
+              <div class="user-email"><%= current_user.email %></div>
+            <% end %>
             <%= button_to "ログアウト", logout_path, method: :delete, class: "btn-logout" %>
           </div>
         </aside>

@@ -1,0 +1,39 @@
+<div class="calendar-container">
+  <div class="calendar-header">
+    <h1 class="calendar-title"><%= @date.strftime("%Y年%m月") %></h1>
+    <div class="calendar-nav">
+      <%= link_to "前月", mycalendar_path(date: @date.prev_month), class: "nav-btn" %>
+      <%= link_to "今月", mycalendar_path, class: "nav-btn" %>
+      <%= link_to "翌月", mycalendar_path(date: @date.next_month), class: "nav-btn" %>
+    </div>
+  </div>
+
+  <div class="calendar">
+    <div class="calendar-weekdays">
+      <% %w[日 月 火 水 木 金 土].each do |day| %>
+        <div class="weekday"><%= day %></div>
+      <% end %>
+    </div>
+
+    <div class="calendar-days">
+      <% (@start_date..@end_date).each do |date| %>
+        <% records = @practice_records[date] || [] %>
+        <% is_current_month = date.month == @date.month %>
+        <% is_today = date == Date.today %>
+        <% avg_condition = records.any? ? (records.sum(&:condition).to_f / records.size).round : nil %>
+
+        <div class="calendar-day <%= 'other-month' unless is_current_month %> <%= 'today' if is_today %> <%= "has-records level-#{avg_condition}" if avg_condition %>">
+          <div class="day-number"><%= date.day %></div>
+          <% if records.any? %>
+            <div class="day-info">
+              <div class="record-count"><%= records.size %>件</div>
+              <% if avg_condition %>
+                <div class="condition-badge">調子: <%= avg_condition %></div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

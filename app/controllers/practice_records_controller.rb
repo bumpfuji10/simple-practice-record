@@ -2,7 +2,6 @@ class PracticeRecordsController < ApplicationController
 
   def index
     @practice_records = current_user.practice_records.page(params[:page]).per(10)
-    @practice_record = current_user.practice_records.new
   end
 
   def create

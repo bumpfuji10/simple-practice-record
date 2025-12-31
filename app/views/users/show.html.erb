@@ -1,0 +1,44 @@
+<h1 class="page-title"><%= @user.name %></h1>
+
+<div class="user-details">
+  <p><strong>Email:</strong> <%= @user.email %></p>
+  <p><strong>Total Records:</strong> <%= @practice_records.count %></p>
+</div>
+
+<h2 class="section-title">Practice Records</h2>
+
+<div data-controller="dialog">
+  <div class="records-list">
+    <% @practice_records.each do |record| %>
+      <div class="record-card"
+           data-action="click->dialog#openWithData"
+           data-title="<%= record.title %>"
+           data-content="<%= record.content %>"
+           data-date="<%= record.created_at.strftime('%Y-%m-%d') %>"
+           data-condition="<%= record.condition %>">
+        <h3 class="record-title"><%= record.title %></h3>
+        <p class="record-content"><%= record.content %></p>
+        <div class="record-meta">
+          <span class="record-date"><%= record.created_at.strftime("%Y-%m-%d") %></span>
+          <% if record.condition %>
+            <span class="record-condition">調子: <%= record.condition %></span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <dialog data-dialog-target="dialog">
+    <div class="dialog-header">
+      <div>
+        <h2 data-dialog-target="title"></h2>
+        <span class="record-date" data-dialog-target="date"></span>
+      </div>
+      <div class="dialog-close" data-action="click->dialog#close"></div>
+    </div>
+    <div class="dialog-condition">
+      調子: <span data-dialog-target="condition"></span>
+    </div>
+    <p class="record-content" data-dialog-target="content"></p>
+  </dialog>
+</div>
